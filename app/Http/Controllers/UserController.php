@@ -18,4 +18,26 @@ class UserController extends Controller
         User::create($incomingFields);
         return 'Hello from register';
     }
+
+    public function login(Request $request) {
+        $incomingFields = $request->validate([
+            'loginusername' => 'required',
+            'loginpassword' => 'required'
+        ]);
+
+        if (auth()->attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
+            $request->session()->regenerate();
+            return 'Congrats!';
+        } else {
+            return 'wypierdalaj';
+        }
+    }
+
+    public function showCorrectHomePage() {
+        if (auth()->check()) {
+            return view('homepage-feed');
+        } else{
+            return view('homepage');
+        }
+    }
 }
