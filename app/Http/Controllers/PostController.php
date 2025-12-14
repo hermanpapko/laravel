@@ -26,6 +26,15 @@ class PostController extends Controller
         return redirect("/post/{$newPost->id}")->with('success', 'You have successfully created a new post!');
     }
 
+
+    public function delete(Post $post)
+    {
+        if (auth()->user()->cannot('delete', $post)) {
+            return 'You do not have permission to delete this post!';
+        }
+        $post->delete();
+        return redirect('/profile/' . auth()->user()->id)->with('success', 'Post successfully deleted');
+    }
     public function viewSinglePost(Post $post) {
         $post['body'] = Str::markdown($post->body);
         return view('single-post', ['post' => $post]);

@@ -9,6 +9,14 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
     //
+
+    public function profile(User $user) {
+        return view('profile-posts', [
+            'username' => $user->username,
+            'posts' => $user->posts()->latest()->get(),
+            'postcount' => $user->posts()->count()
+        ]);
+    }
     public function register(Request $request) {
         $incomingFields = $request->validate([
             'username' => ['required', 'min:3', 'max:20', Rule::unique('users', 'username')],
@@ -46,4 +54,6 @@ class UserController extends Controller
         auth()->logout();
         return redirect('/')->with('success', 'You have successfully logged out!');
     }
+
+
 }
